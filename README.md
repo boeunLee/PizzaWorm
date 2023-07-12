@@ -1,4 +1,6 @@
-피자벌레 게임🐛
+<div align='center'>
+    <h1><b>피자벌레 게임🐛</b></h1>
+</div>
 
 page URL : https://boeunlee.github.io/PizzaWorm/
 1. canvas 사용
