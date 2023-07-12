@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        border: 1px solid black;
+      }
+      #canvasBg {
+        /* canvasBg, canvas 겹치도록 */
+        position: absolute;
+        /* canvasBg가 canvas 뒤로 */
+        z-index: -1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- canvas 만들기 -->
+    <!-- background, pizza image rendering 반짝임 현상 방지를 위해 -->
+    <canvas id="canvasBg" width="300" height="300"></canvas>
+    <!-- main game board (worm, score)-->
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script src="Tile.js"></script>
+    <script src="Worm.js"></script>
+    <script src="Pizza.js"></script>
+
+    <script>
+      ////// canvas 기본 설정 //////
+      const canvas = document.querySelector("#canvas");
+      // context 생성 - canvas instance 생성
+      // canvas 도구 제공
+      // '2d' - 2d 그래프를 그리겠다
+      const ctx = canvas.getContext("2d");
+      const cWidth = canvas.width;
+      const cHeight = canvas.height;
+
+      const canvasBg = document.querySelector("#canvasBg");
+      const ctxBg = canvasBg.getContext("2d");
+
+      ////// 타일 설정 //////
+      const tileSize = 10;
+      // 가로 타일 개수
+      const tileWidth = cWidth / tileSize;
+      // 세로 타일 개수
+      const tileHeight = cHeight / tileSize;
+
+      ////// 점수 그리기 //////
+      let score = 0;
+
+      ////// playGame을 멈출 것인지 여부 ////
+      let playId;
+
+      const rederScore = () => {
+        ctx.font = "20px Helvetica";
+        ctx.fillStyle = "black";
+        // (0,30) = (x,y)좌표
+        ctx.fillText(`SCORE : ${score}`, 0, 30);
+      };
+
+      /////// GAME OVER //////
+      const renderGameOver = () => {
+        cancelAnimationFrame(playId);
+        ctx.font = "30px Helvetica";
+        ctx.fillStyle = "red";
+        // 가운데 정렬을 위해
+        // textBaseline default = bottom
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", cWidth / 2, cHeight / 2);
+      };
+
+      // 타일
+      // const tile = new Tile(2, 2);
+      // tile.renderTile();
+      // tile.renderImg();
+
+      ////// 지렁이 //////
+      const worm = new Worm();
+      const pizza = new Pizza();
+
+      // keyboard 눌렸을때 방향키만 인식하도록
+      document.body.addEventListener("keydown", (event) => {
+        if (
+          event.key === "ArrowUp" ||
+          event.key === "ArrowDown" ||
+          event.key === "ArrowLeft" ||
+          event.key === "ArrowRight"
+        ) {
+          worm.checkDirection(event.key);
+        }
+      });
+
+      ////// playGame 계속 실행 //////
+      // requestAnimationFrame :
+      const playGame = () => {
+        setTimeout(() => {
+          // GAME OVER일 때는 playGame 정지
+          playId = requestAnimationFrame(playGame);
+
+          // canvas 전체 지우기 (시작점 x좌표, 시작점 y좌표, 너비, 높이)
+          ctx.clearRect(0, 0, cWidth, cHeight);
+          // 지렁이 위치
+          worm.moveWorm();
+          // 위치에 지렁이 그리기
+          worm.renderWorm();
+          pizza.renderPizza();
+        }, 100);
+      };
+      requestAnimationFrame(playGame);
+    </script>
+  </body>
+</html>
