@@ -1,4 +1,5 @@
 피자벌레 게임🐛
+
 page URL : https://boeunlee.github.io/PizzaWorm/
 1. canvas 사용
 2. 상하좌우 방향키를 눌러 지렁이를 조작할 수 있다
